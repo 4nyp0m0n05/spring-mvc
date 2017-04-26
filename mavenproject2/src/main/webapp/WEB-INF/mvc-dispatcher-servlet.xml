@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- was: <?xml version="1.0" encoding="UTF-8"?> -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+     
+      
+    <context:component-scan base-package="controller" />
+    <context:component-scan base-package="dao"/>
+    <context:component-scan base-package="service"/>
+    
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+          p:location="/WEB-INF/jdbc.properties" />
+
+    <bean id="dataSource"
+        class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"
+        p:driverClassName="${jdbc.driverClassName}"
+        p:url="${jdbc.databaseurl}"
+        p:username="${jdbc.username}"
+        p:password="${jdbc.password}" />
+
+    <bean
+           class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+           <property name="prefix" value="/WEB-INF/jsp/" />
+           <property name="suffix" value=".jsp" />
+       </bean>
+    <!-- ADD PERSISTENCE SUPPORT HERE (jpa, hibernate, etc) -->
+    <bean id="hibernate4AnnotatedSessionFactory"
+        class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <!--beans:property name="annotatedClasses">
+            <beans:list>
+                <beans:value>com.app.spring.model.Customer</beans:value>
+            </beans:list>
+        </beans:property-->
+        <property name="configLocation">
+            <value>WEB-INF/hibernate.cfg.xml</value>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect
+                </prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+            </props>
+        </property>
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+      <!-- Inject the instance to customerDAO reference with adding sessionFactory -->
+    <bean id="travelDao" class="dao.TravelDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    <!-- Inject the instance to service reference with adding customerDao instance -->
+    <bean id="travelService" class="service.TravelServiceImpl">
+        <property name="travelDao" ref="travelDao"></property>
+    </bean>
+    <!-- Inject the instance to customerDAO reference with adding sessionFactory -->
+    <bean id="userDao" class="dao.UsersDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    <!-- Inject the instance to service reference with adding customerDao instance -->
+    <bean id="userService" class="service.UserServiceImpl">
+        <property name="userDao" ref="userDao"></property>
+    </bean>
+   
+    <!-- Set the package where the annotated classes located at ex @Controller -->
+    <!-- Inject the instance to customerDAO reference with adding sessionFactory -->
+    <bean id="userrolesDao" class="dao.UserrolesDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    <!-- Inject the instance to service reference with adding customerDao instance -->
+    <bean id="userrolesService" class="service.UserrolesServiceImpl">
+        <property name="userrolesDao" ref="userrolesDao"></property>
+    </bean>
+    <bean name="travelServicee" class="service.TravelServiceImpl"/>
+    <!-- Set the package where the annotated classes located at ex @Controller -->
+    <context:annotation-config />
+    <mvc:resources mapping="/resources/**" location="/resources/"
+	cache-period="31556926"/>
+    <mvc:annotation-driven />
+</beans>

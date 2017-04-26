@@ -1,0 +1,45 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"  
+ xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xmlns:p="http://www.springframework.org/schema/p" 
+ xmlns:aop="http://www.springframework.org/schema/aop"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans  
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+    http://www.springframework.org/schema/security  
+    http://www.springframework.org/schema/security/spring-security-4.0.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-4.0.xsd " >  
+  
+ <http auto-config="true" use-expressions="true">  
+    <access-denied-handler error-page="/accessDenied" />
+    <intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />  
+    <intercept-url pattern="/users/**" access="hasRole('ROLE_USER')" />  
+    <form-login login-page="/login"    login-processing-url="/j_spring_security_check"
+    authentication-failure-url="/loginError" />  
+    <logout logout-success-url="/" logout-url="/j_spring_security_logout" />  
+    <csrf  />  
+ </http>  
+  
+ <!--authentication-manager>  
+  <authentication-provider>  
+   <user-service>  
+    <user name="admin" password="adminad" authorities="ROLE_ADMIN" />  
+    <user name="arpit" password="arpit123" authorities="ROLE_ADMIN" />  
+  
+   </user-service>  
+  </authentication-provider>  
+ </authentication-manager-->
+ 
+   <authentication-manager>
+   <authentication-provider>
+     <!-- <security:user-service>
+   <security:user name="dineshonjava" password="sweety" authorities="ROLE_USER" />
+     </security:user-service> -->
+     <!--password-encoder hash="md5"/-->
+     <jdbc-user-service data-source-ref="dataSource"  
+      users-by-username-query="select username, password,'true' as enabled from users where username=?" 
+          authorities-by-username-query="select username, role from userroles  where username =?  " 
+     />
+   </authentication-provider>
+ </authentication-manager>  
+
+</beans:beans>  

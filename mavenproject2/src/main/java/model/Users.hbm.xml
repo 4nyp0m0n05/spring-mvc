@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 09.Nis.2017 18:52:07 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="model.Users" table="users" catalog="dp" optimistic-lock="version">
+        <id name="username" type="string">
+            <column name="username" length="45"  />
+            
+        </id>
+        <property name="id" type="int">
+            <column name="id" not-null="true" unique="true" />
+            <generator class="identity" />
+        </property>
+        <property name="password" type="string">
+            <column name="password" length="45" not-null="true" />
+        </property>
+        <property name="recordnum" type="string">
+            <column name="recordnum" length="45" not-null="true" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="60" not-null="true" />
+        </property>
+        <property name="phone" type="string">
+            <column name="phone" length="20" not-null="true" />
+        </property>
+        <property name="department" type="string">
+            <column name="department" length="20" not-null="true" />
+        </property>
+        <property name="departmanager" type="string">
+            <column name="departmanager" length="60" not-null="true" />
+        </property>
+        <set name="travels" table="travel" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="username" length="45" not-null="true" />
+            </key>
+            <one-to-many class="model.Travel" />
+        </set>
+        <set name="userroleses" table="userroles" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="username" length="45" not-null="true" />
+            </key>
+            <one-to-many class="model.Userroles" />
+        </set>
+    </class>
+</hibernate-mapping>

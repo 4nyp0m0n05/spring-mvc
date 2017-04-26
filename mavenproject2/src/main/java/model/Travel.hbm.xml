@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 26.Nis.2017 08:51:21 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="model.Travel" table="travel" catalog="dp" optimistic-lock="version">
+        <id name="travelid" type="java.lang.Integer">
+            <column name="travelid" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="users" class="model.Users" fetch="select">
+            <column name="username" length="45" not-null="true" />
+        </many-to-one>
+        <property name="place" type="string">
+            <column name="place" length="45" not-null="true" />
+        </property>
+        <property name="goal" type="string">
+            <column name="goal" length="75" not-null="true" />
+        </property>
+        <property name="startdate" type="date">
+            <column name="startdate" length="10" not-null="true" />
+        </property>
+        <property name="finishdate" type="date">
+            <column name="finishdate" length="10" not-null="true" />
+        </property>
+        <property name="cost" type="java.lang.Integer">
+            <column name="cost" />
+        </property>
+        <property name="information" type="string">
+            <column name="information" length="60" />
+        </property>
+        <property name="codepr" type="string">
+            <column name="codepr" length="8" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
